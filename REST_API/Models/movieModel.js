@@ -13,14 +13,58 @@ mongoose.connect(process.env.CONN_STR)
 })
 
 //schema  --> model --> CRUD
-const movieSchema=new mongoose.Schema({
+const movieSchema= new mongoose.Schema({
     name:{
         type:String,
-        unique:true
+        required:[true,'Name is required field!'],
+        unique:true,
+        trim:true
     },
-    description:String,
-    duration:Number,
-    ratings:Number
+    description:{
+        type:String,
+        required:[true,'Description is required field']
+    },
+    duration:{
+        type:Number,
+        required:[true,'Duration is required field!']
+    },
+    ratings:{
+        type:Number,
+    },
+    totalRatings:{
+        type:Number
+    },
+    releaseYear:{
+        type:Number,
+        required:[true , "Release Year is required field!"]
+    },
+    realeaseDate:{
+        type:Date
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now()
+    },
+    genres:{
+        type:[String],
+        required:[true , "Genres is required field!"]
+    },
+    directors:{
+        type:[String],
+        required:[true , "Directors is required field!"]
+    },
+    actors:{
+        type:[String],
+        required:[true , "Actors is required field!"]
+    },
+    coverImage:{
+        type:[String],
+        required:[true , "Cover Image is required field!"]
+    },
+    price:{
+        type:Number,
+        required:[true , "Cover Image is required field!"]
+    }
 })
 
 //model
