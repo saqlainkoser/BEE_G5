@@ -9,7 +9,7 @@ mongoose.connect(process.env.CONN_STR)
 .then((conn)=>{
     console.log("DB Connection Successfull");
 }).catch((err)=>{
-    console.log("some error has occured");
+    console.log("some error has occured" + err);
 })
 
 //schema  --> model --> CRUD
