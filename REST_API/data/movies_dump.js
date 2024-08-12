@@ -45,5 +45,5 @@ if(process.argv[2]=="--import"){
     importMovies() 
 }
 if(process.argv[2]=="--delete"){
-    deleteMovies()
+deleteMovies()
 }
