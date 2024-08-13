@@ -26,20 +26,39 @@ class Apifeatures{
     }
 
     sort(){
-        //SORTING 
-
-    if(this.queryStr.sort){
-        const sortBy = this.queryStr.sort
-        this.query = this.query.sort(sortBy)
+        if(this.queryStr.sort){
+            const sortBy = this.queryStr.sort.split(',').join(' ');
+            this.query = this.query.sort(sortBy);
+        }else{
+            this.query= this.query.sort('-createdAt')
+        }
+        return this;
     }
-    return this
+    limitFields(){
+        if(this.queryStr.fields){
+            const fields = this.queryStr.fields.split(',').join(' ');
+            this.query = this.query.select(fields);
+        }else{
+            this.query = this.query.select('-__v');
+        }
+        return this;
     }
 
-    limit_fields(){
-        
+    paginate(){
+        const page = this.queryStr.page*1 || 1;
+        const limits = this.queryStr.limit*1 || 10;
+        //PAGE 1: 1- 10 ;PAGE 2:11 -20 ; PAGE 3: 21 - 30 
+        const skip =(page - 1) * limits;
+        this.query = this.query.skip(skip).limit(limits)
+        //Showing error
+        // if(this.queryStr.page){
+        //     const moviesCount =await Movie.countDocuments();
+        //     if(skip >=moviesCount){
+        //         throw new Error("This page is not found!")
+        //     }
+        // }
+        return this;
     }
-
-    paginate(){}
 
 
 

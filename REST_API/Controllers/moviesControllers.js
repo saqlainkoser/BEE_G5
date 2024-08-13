@@ -21,7 +21,7 @@ exports.getMovies =async (req,res)=>{
  try{
     //Calling ApiFeatures 
     const features = new Apifeatures(Movie.find(),req.query)
-    .filter().sort()
+    .filter().sort().limitFields().paginate()
     
     let movies = await features.query;
 
@@ -129,4 +129,84 @@ exports.getMoive =async (req,res)=>{
 
 exports.deleteMovie = (req,res)=>{
    
+}
+
+
+
+exports.getMoviesStats =async (req,res) =>{
+    try{
+        //Aggregation function is used to take min max average sum etc
+        const stats = await Movie.aggregate([
+            //STAGE 1 
+            {$match:{ratings:{$gte :4}}},
+
+            //STAGE 2
+            {$group : {
+                _id :'$releaseYear',
+                avgRating:{$avg : '$ratings'},
+                avgPrice:{$avg:'$price'},
+                minPrice:{$min:'$price'},
+                maxPrice:{$max:'$price'},
+                totalPrice:{$sum:'$price'},
+                movieCount:{$sum:1}
+            }},
+
+            //STAGE 3
+            {$sort :{minPrice:1}}
+
+        ])
+
+        res.status(200).json({
+            status:"success",
+            count:stats.length,
+            data:{
+                stats
+            }
+        })
+
+
+
+    }catch(err){
+        res.status(400).json({
+            status:"fail",
+            message:err.message
+        })
+    }
+}
+
+
+//Movies by Genres 
+exports.getMoviesByGenres = async(req,res) =>{
+    try{
+        const movies = await Movie.aggregate([
+            //STAGE 1
+            {$unwind : "$genres"},
+            //STAGE 2
+            {$group : {
+                _id:"$genres",
+                movieCount:{$sum : 1},
+                movies:{$push : '$name'}
+            }},
+            //STAGE 3
+            {$addFields :{genres: "$_id"}},
+            //STAGE 4
+            {$project:{_id:0}}
+        ])
+        
+        res.status(200).json({
+            status:"success",
+            count:movies.length,
+            data:{
+                movies
+            }
+        })
+
+
+        
+    }catch(err){
+        res.status(400).json({
+            status:"fail",
+            message:err.message
+        })
+    }
 }
