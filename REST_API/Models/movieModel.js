@@ -65,7 +65,22 @@ const movieSchema= new mongoose.Schema({
         type:Number,
         required:[true , "Cover Image is required field!"]
     }
+},
+{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
+}
+)
+
+//Virtual Field
+movieSchema.virtual('durationInHours').get(function(){
+    return this.duration/60 ;
 })
+
+
+
+
+
 
 //model
 const Movie=mongoose.model("movies",movieSchema);
