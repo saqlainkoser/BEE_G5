@@ -64,7 +64,8 @@ const movieSchema= new mongoose.Schema({
     price:{
         type:Number,
         required:[true , "Cover Image is required field!"]
-    }
+    },
+    createdBy : String
 },
 {
     toJSON:{virtuals:true},
@@ -77,12 +78,17 @@ movieSchema.virtual('durationInHours').get(function(){
     return this.duration/60 ;
 })
 
+//Query Middleware
+movieSchema.pre('save',function(next){
+    this.createdBy = "Shaan";
+    next();
+})
 
 
 
 
 
-//model
+//modeli
 const Movie=mongoose.model("movies",movieSchema);
 
 //using this model we do CRUD operation
