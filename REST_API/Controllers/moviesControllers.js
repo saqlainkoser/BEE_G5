@@ -137,6 +137,8 @@ exports.getMoviesStats =async (req,res) =>{
     try{
         //Aggregation function is used to take min max average sum etc
         const stats = await Movie.aggregate([
+            //STAGE 0 
+            // {$match:{releaseYear:{$lte :2024}}},
             //STAGE 1 
             {$match:{ratings:{$gte :4}}},
 

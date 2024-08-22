@@ -3,6 +3,8 @@
 const mongoose=require('mongoose')
 const dotenv=require('dotenv')
 dotenv.config({path:"./config.env"}) // to connect config
+const fs = require('fs');
+
 
 //to connect mongodb using mongoose
 mongoose.connect(process.env.CONN_STR)
@@ -78,17 +80,45 @@ movieSchema.virtual('durationInHours').get(function(){
     return this.duration/60 ;
 })
 
-//Query Middleware
+//Document Middleware
+//isse ppehle doc pre mid
+// save
+//isse baad doc pst mid
+
+
 movieSchema.pre('save',function(next){
     this.createdBy = "Shaan";
     next();
 })
 
+movieSchema.post('save',function(doc,next){
+const content = `A new movie document with name ${doc.name} has been 
+created by ${doc.createdBy}`;
+fs.writeFileSync('./Log/log.txt',content,{flag:'a'},(err)=>{
+    console.log(err.message);
+})
+ next();   
+})
 
 
+// Query Middle
+movieSchema.pre(/^find/,function(next){
+    this.find({releaseYear :{$lte:'2024'}})
+    next()
+})
 
 
-//modeli
+//Aggregation Middleware
+movieSchema.pre('aggregate',function(next){
+    console.log(this.pipeline().unshift(
+        {$match:{releaseYear:{$lte :2024}}}
+    ))
+    next();
+})
+
+
+//model
+
 const Movie=mongoose.model("movies",movieSchema);
 
 //using this model we do CRUD operation
