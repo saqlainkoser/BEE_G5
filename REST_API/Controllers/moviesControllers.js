@@ -6,7 +6,6 @@ const app=express();
 // app.use(express.json())
 // const movie = require('./../Models/movieModel.js');
 
-
 const Movie = require("./../Models/movieModel.js");
 const Apifeatures = require("../Utils/ApiFeatures.js");
 
